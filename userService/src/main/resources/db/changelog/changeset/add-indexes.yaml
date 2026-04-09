@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-indices-and-foreign-keys
+      author: Kiryl-Klimashevich
+      changes:
+        # 1. СОЗДАНИЕ СВЯЗЕЙ (Foreign Keys)
+        - addForeignKeyConstraint:
+            baseTableName: cards
+            baseColumnNames: user_id
+            constraintName: fk_cards_user
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+
+        - createIndex:
+            indexName: idx_users_email_phone
+            tableName: users
+            columns:
+              - column:
+                  name: email
+              - column:
+                  name: phone_number
+
+        - createIndex:
+            indexName: idx_cards_user_id
+            tableName: cards
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            indexName: idx_cards_number
+            tableName: cards
+            columns:
+              - column:
+                  name: number
