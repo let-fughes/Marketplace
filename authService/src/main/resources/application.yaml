@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: Auth Service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/webshopauthdb
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8082
+
+jwt:
+  secret: ZaiYc8RRobcwsj88Og2r70hJXcxFZ8zhwDH9cmX9620c7F+A8zDDu+volEdStqfz4AuppwmB3ayEz/WIlLBSbg==
+  refresh:
+    expiration: 604800000
+  access:
+    expiration: 900000
+
+user-service:
+  url: http://localhost:8081/
