@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-indices-to-auth-table
+      author: Kiryl-Klimashevich
+      changes:
+        - createIndex:
+            indexName: idx_auth_login
+            tableName: auth_data
+            columns:
+              - column:
+                  name: login
