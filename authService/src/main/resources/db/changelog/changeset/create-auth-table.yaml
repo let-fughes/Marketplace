@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+     id: create-auth-table
+     author: Kiryl-Klimashevich
+     changes:
+       - createTable:
+           tableName: auth_data
+           columns:
+             - column:
+                 name: id
+                 type: bigint
+                 autoIncrement: true
+                 constraints:
+                   primaryKey: true
+                   nullable: false
+             - column:
+                 name: login
+                 type: varchar(100)
+                 constraints:
+                   nullable: false
+                   unique: true
+             - column:
+                 name: hashed_password
+                 type: varchar(100)
+                 constraints:
+                   nullable: false
+             - column:
+                 name: access
+                 type: varchar(10)
+                 constraints:
+                   nullable: false
