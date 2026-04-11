@@ -15,4 +15,4 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface UserServiceClient {
     @PostMapping("/users")
     ResponseEntity<UserCreationResponse> createUser(@RequestBody UserCreateRequest request);
-}
+} 
