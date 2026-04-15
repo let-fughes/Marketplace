@@ -1,7 +1,9 @@
 package com.kirylliuss.shop.userService.controller;
 
 import com.kirylliuss.shop.userService.dto.request.UserRequest;
+import com.kirylliuss.shop.userService.dto.response.ProfilePhotoUrlResponse;
 import com.kirylliuss.shop.userService.dto.response.UserResponse;
+import com.kirylliuss.shop.userService.service.ProfileImageService;
 import com.kirylliuss.shop.userService.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,6 +26,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final ProfileImageService profileImageService;
 
     @GetMapping
     @Operation(
@@ -50,6 +53,20 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
+    @GetMapping("/profile")
+    @Operation(
+            summary = "Get user by id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User got successfully"),
+                    @ApiResponse(responseCode = "404", description = "User not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+    public ResponseEntity<UserResponse> getProfile(Principal principal){
+        String login = principal.getName();
+        UserResponse response = userService.getUserData(login);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @GetMapping("/search")
     @Operation(
             summary = "Search user by email or phone",
@@ -69,6 +86,21 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    @GetMapping("/getProfilePhotoUrl/{login}")
+    @Operation(
+            summary = "Get user by id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User got successfully"),
+                    @ApiResponse(responseCode = "404", description = "User not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+    public ResponseEntity<ProfilePhotoUrlResponse> getProfilePhotoUrl(@PathVariable String login){
+        ProfilePhotoUrlResponse response = new ProfilePhotoUrlResponse();
+        response.setUrl(profileImageService.getProfilePhoto(login));
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @PostMapping
     @Operation(
             summary = "Create new user",
@@ -83,7 +115,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{login}")
     @Operation(
             summary = "Update user",
             responses = {
@@ -94,12 +126,12 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             })
     public ResponseEntity<UserResponse> updateUser(
-            @PathVariable Long id, @Valid @RequestBody UserRequest userRequest) {
-        UserResponse updatedUser = userService.updateUser(id, userRequest);
+            @PathVariable String login, @Valid @RequestBody UserRequest userRequest) {
+        UserResponse updatedUser = userService.updateUser(login, userRequest);
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{login}")
     @Operation(
             summary = "Delete user",
             responses = {
@@ -107,8 +139,8 @@ public class UserController {
                     @ApiResponse(responseCode = "404", description = "User not found"),
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             })
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<Void> deleteUser(@PathVariable String login) {
+        userService.deleteByLogin(login);
         return ResponseEntity.noContent().build();
     }
 }
