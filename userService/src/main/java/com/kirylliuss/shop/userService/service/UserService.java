@@ -45,6 +45,11 @@ public class UserService {
         return toUserResponseWithCards(user);
     }
 
+    public UserResponse getUserData(String login){
+        User user = userRepository.findByLogin(login).orElseThrow(() -> new RuntimeException("User not found!"));
+        return userMapper.toUserResponse(user);
+    }
+
     @Cacheable(value = "usersById", key = "#id")
     @Transactional(readOnly = true)
     public UserResponse getUserById(Long id) {
@@ -76,10 +81,10 @@ public class UserService {
                     @CacheEvict(value = "usersList", key = "'allUsers'"),
             })
     @Transactional
-    public UserResponse updateUser(Long id, @Valid UserRequest userRequest)
+    public UserResponse updateUser(String login, @Valid UserRequest userRequest)
             throws ValidationException {
         User existingUser =
-                userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+                userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException(login));
 
         userMapper.updateUserFromUserRequest(existingUser, userRequest);
         User updatedUser = userRepository.save(existingUser);
@@ -94,11 +99,11 @@ public class UserService {
                     @CacheEvict(value = "usersByEmail", allEntries = true)
             })
     @Transactional
-    public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException(id);
+    public void deleteByLogin(String login) {
+        if (!userRepository.existsByLogin(login)) {
+            throw new UserNotFoundException(login);
         }
-        userRepository.deleteById(id);
+        userRepository.deleteByLogin(login);
     }
 
     private UserResponse toUserResponseWithCards(User user) {
