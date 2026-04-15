@@ -16,9 +16,13 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long>{
     List<User> findByIdIn(List<Long> ids);
 
+    Optional<User> findByLogin(String login);
+
     Optional<User> findByEmail(String email);
 
     Optional<User> findByPhoneNumber(String phoneNumber);
+
+    boolean existsByLogin(String login);
 
     @Modifying
     @Transactional
@@ -37,4 +41,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.cards WHERE u.id = :id")
     User findByIdWithCards(@Param("id") Long id);
+
+    void deleteByLogin(String login);
 }
