@@ -27,6 +27,7 @@ public class JwtUtil {
         return generateToken(login, accessTokenExpiration, access);
     }
 
+
     public String generateRefreshToken(String login, String access){
         return generateToken(login, refreshTokenExpiration, access);
     }
