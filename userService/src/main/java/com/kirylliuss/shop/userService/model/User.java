@@ -23,6 +23,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "login", nullable = false, unique = true)
+    private String login;
+
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
@@ -40,6 +43,9 @@ public class User {
 
     @Column(name = "role", nullable = false)
     private String role;
+
+    @Column(name = "profile_photo_url", nullable = true)
+    private String profilePhotoUrl;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
