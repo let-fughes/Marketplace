@@ -17,6 +17,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserRequest {
 
+    @NotBlank(message = "Login is mandatory.")
+    @Size(max = 100, message = "Max login size is 100.")
+    private String login;
+
     @NotBlank(message = "First name is mandatory.")
     @Size(max = 50, message = "First name should be less than 50.")
     private String firstName;
@@ -40,6 +44,8 @@ public class UserRequest {
 
     @NotBlank(message = "Role is mandatory.")
     private String access;
+
+    private String profilePhotoUrl;
 
     private LocalDateTime createdAt;
 }
