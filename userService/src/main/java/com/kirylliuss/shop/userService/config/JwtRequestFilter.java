@@ -1,6 +1,6 @@
 package com.kirylliuss.shop.userService.config;
 
-import com.kirylliuss.shop.authService.service.JwtUtil;
+import com.kirylliuss.shop.userService.service.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
