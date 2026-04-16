@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: Shop Gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret-key: ZaiYc8RRobcwsj88Og2r70hJXcxFZ8zhwDH9cmX9620c7F+A8zDDu+volEdStqfz4AuppwmB3ayEz/WIlLBSbg==
+    cloud:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
