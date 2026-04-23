@@ -2,6 +2,7 @@ package com.kirylliuss.shop.userService.controller;
 
 import com.kirylliuss.shop.userService.service.NotificationService;
 import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/v1/api/notifications")
+@RequiredArgsConstructor
 public class NotificationController {
 
     private final NotificationService notificationService;

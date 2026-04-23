@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -65,6 +66,30 @@ public class UserController {
         String login = principal.getName();
         UserResponse response = userService.getUserData(login);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // ... твои предыдущие методы ...
+
+    @PostMapping(value = "/profile/avatar", consumes = "multipart/form-data")
+    @Operation(
+            summary = "Upload user avatar",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Avatar uploaded successfully"),
+                    @ApiResponse(responseCode = "400", description = "Invalid file"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+    public ResponseEntity<ProfilePhotoUrlResponse> uploadAvatar(
+            @RequestParam("file") MultipartFile file,
+            Principal principal) {
+
+        String login = principal.getName();
+
+        String photoUrl = profileImageService.uploadImage(file, login);
+
+        ProfilePhotoUrlResponse response = new ProfilePhotoUrlResponse();
+        response.setUrl(photoUrl);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/search")
