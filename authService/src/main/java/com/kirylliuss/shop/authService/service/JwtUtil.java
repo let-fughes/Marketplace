@@ -69,9 +69,9 @@ public class JwtUtil {
 
     public Date getExpirationDateFromToken(String token){
         Claims claims = Jwts.parser()
-                .setSigningKey(getSigningKey()) // ИСПРАВЛЕНО
+                .setSigningKey(getSigningKey())
                 .build()
-                .parseClaimsJws(token) // Используй Jws для подписанных токенов
+                .parseClaimsJws(token)
                 .getBody();
         return claims.getExpiration();
     }
@@ -79,7 +79,7 @@ public class JwtUtil {
     public boolean isRefreshToken(String refreshToken){
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey(getSigningKey()) // ИСПРАВЛЕНО
+                    .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(refreshToken)
                     .getBody();
