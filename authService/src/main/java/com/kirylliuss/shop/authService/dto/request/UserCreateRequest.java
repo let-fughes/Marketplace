@@ -12,6 +12,11 @@ import java.time.LocalDateTime;
 
 @Data
 public class UserCreateRequest {
+
+    @NotBlank(message = "Login is mandatory.")
+    @Size(max = 100, message = "Max login size is 100.")
+    private String login;
+
     @NotBlank(message = "First name is mandatory.")
     @Size(max = 50, message = "First name should be less than 50.")
     private String firstName;
@@ -39,7 +44,8 @@ public class UserCreateRequest {
     private LocalDateTime createdAt;
 
     public UserCreateRequest(String login) {
-        this.firstName = login;
+        this.login = login;
+        this.firstName = "User";
         this.lastName = "User";
         this.email = login + "@example.com";
         this.phoneNumber = "000000";
@@ -48,7 +54,8 @@ public class UserCreateRequest {
         this.createdAt = LocalDateTime.now();
     }
 
-    public UserCreateRequest(String name, String surname, LocalDate birthDate, String email, String number){
+    public UserCreateRequest(String login, String name, String surname, LocalDate birthDate, String email, String number){
+        this.login = login;
         this.firstName = name;
         this.lastName = surname;
         this.email = email;
