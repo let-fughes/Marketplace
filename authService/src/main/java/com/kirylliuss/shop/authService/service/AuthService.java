@@ -45,6 +45,7 @@ public class AuthService {
 
         try {
             UserCreateRequest userRequest = new UserCreateRequest(
+                    request.getLogin(),
                     request.getFirstName(),
                     request.getLastName(),
                     request.getBirthDate(),
@@ -63,7 +64,6 @@ public class AuthService {
 
         } catch (Exception e) {
             logger.error("Failed to create user in User Service. Rollback. Error: {}", e.getMessage());
-            // Пробрасываем RuntimeException для срабатывания @Transactional
             throw new RuntimeException("External service failure, registration rolled back", e);
         }
     }
