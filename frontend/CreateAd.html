@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Advertisement | WEB SHOP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .soft-glass { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .input-field { background-color: #1e293b; transition: all 0.2s; border: 1px solid transparent; }
+        .input-field:focus { background-color: #334155; border-color: rgba(96, 165, 250, 0.3); outline: none; }
+        .back-btn { transition: all 0.2s ease; }
+        .back-btn:hover { transform: translateX(-4px); }
+        select option { background: #1e293b; color: #f8fafc; }
+        .preview-scroll::-webkit-scrollbar { display: none; }
+        .preview-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-12 flex flex-col items-center justify-center">
+
+    <div class="w-full max-w-3xl relative mt-10 md:mt-0">
+        <a href="index.html" class="back-btn absolute -top-12 left-0 md:-left-16 flex items-center gap-2 text-slate-400 hover:text-white py-2 px-3 rounded-xl transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            <span class="text-sm font-medium tracking-wide">Back to Marketplace</span>
+        </a>
+
+        <div class="w-full p-8 md:p-12 rounded-[2.5rem] soft-glass shadow-2xl">
+            <div class="mb-10 text-center">
+                <h1 class="text-3xl font-semibold text-white tracking-tight">Post an Ad</h1>
+                <p class="text-slate-400 mt-2 text-sm">Provide accurate details for faster selling</p>
+            </div>
+
+            <form id="create-ad-form" class="space-y-8">
+                <div id="drop-zone" class="group relative w-full h-56 border-2 border-dashed border-slate-700 rounded-[3rem] flex flex-col items-center justify-center hover:border-blue-500/50 hover:bg-blue-500/5 transition-all cursor-pointer overflow-hidden">
+                    <div id="upload-placeholder" class="text-center p-4">
+                        <svg class="w-10 h-10 text-slate-600 group-hover:text-blue-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="text-xs text-slate-500 group-hover:text-blue-400 font-medium uppercase tracking-widest">Add product photos</span>
+                    </div>
+                    <input type="file" id="file-input" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" multiple>
+                    <div id="preview-container" class="preview-scroll absolute inset-0 flex gap-3 p-4 hidden bg-[#1e293b] overflow-x-auto"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 mb-2 ml-1">Listing Title</label>
+                        <input type="text" name="title" required placeholder="Name of your item" 
+                               class="w-full p-4 rounded-2xl input-field text-white placeholder-slate-600 text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 mb-2 ml-1">Category</label>
+                        <select name="category" required class="w-full p-4 rounded-2xl input-field text-slate-300 text-sm appearance-none cursor-pointer">
+                            <option value="" disabled selected>Select category</option>
+                            <option value="ELECTRONICS">Electronics</option>
+                            <option value="FASHION">Fashion & Style</option>
+                            <option value="HOME">Home & Garden</option>
+                            <option value="AUTO">Auto & Parts</option>
+                            <option value="KIDS">Kids & Toys</option>
+                            <option value="SPORT">Hobbies & Sport</option>
+                            <option value="PETS">Pets</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 mb-2 ml-1">Location</label>
+                        <select name="location" required class="w-full p-4 rounded-2xl input-field text-slate-300 text-sm appearance-none cursor-pointer">
+                            <option value="" disabled selected>Select city</option>
+                            <option value="Minsk">Minsk</option>
+                            <option value="Gomel">Gomel</option>
+                            <option value="Grodno">Grodno</option>
+                            <option value="Brest">Brest</option>
+                            <option value="Vitebsk">Vitebsk</option>
+                            <option value="Mogilev">Mogilev</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 mb-2 ml-1">Price (BYN)</label>
+                        <input type="number" name="price" required placeholder="0.00" step="0.01"
+                               class="w-full p-4 rounded-2xl input-field text-white placeholder-slate-600 text-sm font-semibold">
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 mb-2 ml-1">Detailed Description</label>
+                        <textarea name="description" rows="5" placeholder="Write about condition, features..." 
+                                  class="w-full p-4 rounded-2xl input-field text-white placeholder-slate-600 text-sm resize-none"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" id="submit-btn" class="w-full py-5 bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-900/30 text-sm uppercase tracking-widest mt-4">
+                    Publish Listing
+                </button>
+            </form>
+        </div>
+        
+        <p class="text-center text-[10px] text-slate-600 uppercase tracking-widest mt-8">
+            By publishing you agree to our terms & conditions
+        </p>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const previewContainer = document.getElementById('preview-container');
+        const placeholder = document.getElementById('upload-placeholder');
+        const form = document.getElementById('create-ad-form');
+
+        // Preview Images logic
+        fileInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            if (files.length > 0) {
+                placeholder.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+                previewContainer.innerHTML = '';
+                [...files].forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = document.createElement('img');
+                        img.src = event.target.result;
+                        img.className = "h-full min-w-[120px] max-w-[120px] object-cover rounded-[1.5rem] border border-white/5";
+                        previewContainer.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const token = localStorage.getItem('accessToken'); 
+            if (!token) {
+                alert("Please log in first!");
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            const formData = new FormData();
+            
+            // JSON metadata
+            const itemData = {
+                name: form.title.value,
+                category: form.category.value,
+                price: parseFloat(form.price.value),
+                description: form.description.value,
+                location: form.location.value
+            };
+
+            formData.append('item', new Blob([JSON.stringify(itemData)], {
+                type: 'application/json'
+            }));
+
+            // File upload (check MinIO configuration)
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            } else {
+                alert("Please add at least one photo");
+                return;
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerText = "Publishing...";
+
+                const response = await fetch('http://localhost:8080/v1/api/items', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert("Success! Your ad is live.");
+                    window.location.href = 'index.html';
+                } else {
+                    const errorText = await response.text();
+                    console.error("Backend error:", errorText);
+                    alert("Error: " + (errorText || "Server error occurred"));
+                }
+            } catch (err) {
+                console.error("Fetch error:", err);
+                alert("Connection failed. Check if Gateway (8080) and MinIO (9000) are running.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Publish Listing";
+            }
+        });
+    </script>
+</body>
+</html>
