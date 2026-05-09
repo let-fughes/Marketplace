@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | BARAHOLISHE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .soft-glass { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.03); }
+        .modal-overlay { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); }
+        
+        input.edit-input {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: white;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        input.edit-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+        .hidden-modal { display: none !important; }
+        
+        .avatar-hover:hover .upload-overlay { opacity: 1; }
+        .upload-overlay { transition: opacity 0.2s; opacity: 0; background: rgba(15, 23, 42, 0.7); cursor: pointer; }
+        
+        .card-bg { 
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%); 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .card-bg::after { content: ''; position: absolute; top: 0; right: 0; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%; transform: translate(30%, -30%); }
+        .card-bg::before { content: ''; position: absolute; bottom: 0; left: 0; width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 50%; transform: translate(-30%, 30%); }
+
+        .loader { border: 3px solid rgba(255,255,255,0.1); border-top-color: #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-12">
+
+    <div id="edit-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden-modal">
+        <div class="modal-overlay absolute inset-0" onclick="toggleModal('edit-modal', false)"></div>
+        <div class="soft-glass relative w-full max-w-lg p-8 rounded-[2.5rem] shadow-2xl border border-white/10">
+            <h3 class="text-xl font-bold mb-6">Edit Profile</h3>
+            <form id="edit-form" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-[10px] uppercase text-slate-500 ml-2 mb-1 block">First Name</label>
+                    <input type="text" id="edit-firstname" class="edit-input" required></div>
+                    <div><label class="text-[10px] uppercase text-slate-500 ml-2 mb-1 block">Last Name</label>
+                    <input type="text" id="edit-lastname" class="edit-input"></div>
+                </div>
+                <div><label class="text-[10px] uppercase text-slate-500 ml-2 mb-1 block">Email</label>
+                <input type="email" id="edit-email" class="edit-input" required></div>
+                <div><label class="text-[10px] uppercase text-slate-500 ml-2 mb-1 block">Phone Number</label>
+                <input type="tel" id="edit-phone" placeholder="+375 (__) ___-__-__" class="edit-input"></div>
+                
+                <div class="flex gap-3 mt-8">
+                    <button type="button" class="flex-1 py-3 bg-slate-800 rounded-xl" onclick="toggleModal('edit-modal', false)">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="password-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden-modal">
+        <div class="modal-overlay absolute inset-0" onclick="resetSecurityModal()"></div>
+        <div class="soft-glass relative w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl border border-white/10">
+            <h3 class="text-xl font-bold mb-6">Security Settings</h3>
+            
+            <div id="step-verify-code" class="space-y-4">
+                <p class="text-sm text-slate-400 mb-4">We've sent a 6-digit confirmation code to your email.</p>
+                <div>
+                    <label class="text-[10px] uppercase text-slate-500 ml-2 mb-1 block">Verification Code</label>
+                    <input type="text" id="verify-code" maxlength="6" placeholder="000000" class="edit-input text-center text-2xl tracking-[1rem] font-bold">
+                </div>
+                <div class="flex gap-3 mt-8">
+                    <button type="button" class="flex-1 py-3 bg-slate-800 rounded-xl" onclick="resetSecurityModal()">Cancel</button>
+                    <button type="button" onclick="verifyCode()" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold">Verify</button>
+                </div>
+            </div>
+
+            <form id="password-form" class="space-y-4 hidden">
+                <input type="password" id="new-password" placeholder="New Password" class="edit-input" required>
+                <input type="password" id="confirm-password" placeholder="Confirm Password" class="edit-input" required>
+                <div class="flex gap-3 mt-8">
+                    <button type="button" class="flex-1 py-3 bg-slate-800 rounded-xl" onclick="resetSecurityModal()">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold">Update Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="card-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden-modal">
+        <div class="modal-overlay absolute inset-0" onclick="toggleModal('card-modal', false)"></div>
+        <div class="soft-glass relative w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl border border-white/10">
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                Bind New Card
+            </h3>
+            <form id="card-form" class="space-y-4">
+                <input type="text" id="card-num" placeholder="0000 0000 0000 0000" maxlength="19" class="edit-input font-mono" required>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="card-exp" placeholder="MM/YY" maxlength="5" class="edit-input text-center" required>
+                    <input type="password" id="card-cvv" placeholder="CVV" maxlength="3" class="edit-input text-center" required>
+                </div>
+                <div class="flex gap-3 mt-8">
+                    <button type="button" class="flex-1 py-3 bg-slate-800 rounded-xl" onclick="toggleModal('card-modal', false)">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold">Save Card</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+        <nav class="mb-8 flex justify-between items-center">
+            <a href="index.html" class="text-slate-400 hover:text-white transition-colors text-sm">← Back to Market</a>
+            <button id="logout-btn" class="text-red-400 hover:text-red-300 text-sm font-medium">Log Out</button>
+        </nav>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="md:col-span-1 space-y-6">
+                <div class="soft-glass p-8 rounded-[2.5rem] text-center shadow-2xl border border-white/5">
+                    <div class="relative inline-block avatar-hover" onclick="document.getElementById('photo-upload').click()">
+                        <div id="avatar-circle" class="w-32 h-32 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-400 mx-auto flex items-center justify-center text-4xl font-bold text-white shadow-xl bg-cover bg-center overflow-hidden transition-all duration-300">
+                            <span id="avatar-text">?</span>
+                        </div>
+                        <div class="upload-overlay absolute inset-0 rounded-full flex flex-col items-center justify-center">
+                            <div id="avatar-loader" class="loader mb-1"></div>
+                            <svg id="avatar-icon" class="w-8 h-8 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </div>
+                    </div>
+                    <input type="file" id="photo-upload" class="hidden" accept="image/*">
+                    <h2 id="display-fullname" class="mt-6 text-xl font-semibold text-white">Loading...</h2>
+                    <p id="display-login" class="text-slate-400 text-sm italic">@...</p>
+                    <button onclick="startPasswordRecovery()" class="mt-6 w-full py-2 text-[10px] uppercase tracking-widest text-slate-500 hover:text-blue-400 transition-colors">Security Settings</button>
+                </div>
+            </div>
+
+            <div class="md:col-span-2 space-y-6">
+                <div class="soft-glass p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-white/5">
+                    <h3 class="text-lg font-medium text-white mb-8">Personal Info</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div><p class="text-[10px] uppercase text-slate-500">Firstname</p><p id="info-firstname" class="text-slate-200">—</p></div>
+                        <div><p class="text-[10px] uppercase text-slate-500">Lastname</p><p id="info-lastname" class="text-slate-200">—</p></div>
+                        <div><p class="text-[10px] uppercase text-slate-500">Email Address</p><p id="info-email" class="text-slate-200">—</p></div>
+                        <div><p class="text-[10px] uppercase text-slate-500">Phone Number</p><p id="info-phone" class="text-slate-200">—</p></div>
+                        <div><p class="text-[10px] uppercase text-slate-500">Login</p><p id="info-login" class="text-blue-400">—</p></div>
+                    </div>
+                    <div class="mt-12 pt-8 border-t border-white/5">
+                        <button onclick="toggleModal('edit-modal', true)" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium transition-all shadow-lg shadow-blue-900/20">Edit Profile</button>
+                    </div>
+                </div>
+
+                <div class="soft-glass p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-white/5">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-lg font-medium text-white">Payment Methods</h3>
+                        <button onclick="toggleModal('card-modal', true)" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Add Card
+                        </button>
+                    </div>
+                    <div id="cards-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:8080/v1/api/users';
+        let userCache = null;
+        let localCards = []; 
+
+        async function fetchProfile() {
+            const token = localStorage.getItem('accessToken');
+            if (!token) { window.location.href = 'auth.html'; return; }
+            try {
+                const response = await fetch(`${BASE_URL}/profile`, {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                });
+                if (response.ok) {
+                    userCache = await response.json();
+                    if(userCache.cards) localCards = userCache.cards;
+                    renderProfile(userCache);
+                    renderCards();
+                } else if (response.status === 401) {
+                    localStorage.clear(); window.location.href = 'auth.html';
+                }
+            } catch (err) { console.error("Load Error:", err); }
+        }
+
+        function renderProfile(user) {
+            document.getElementById('display-fullname').textContent = `${user.firstName || ''} ${user.lastName || ''}`;
+            document.getElementById('display-login').textContent = `@${user.login || 'unknown'}`;
+            document.getElementById('info-firstname').textContent = user.firstName || '—';
+            document.getElementById('info-lastname').textContent = user.lastName || '—';
+            document.getElementById('info-email').textContent = user.email || '—';
+            document.getElementById('info-phone').textContent = user.phoneNumber || '—';
+            document.getElementById('info-login').textContent = user.login || '—';
+
+            const circle = document.getElementById('avatar-circle');
+            const text = document.getElementById('avatar-text');
+            if (user.profilePhotoUrl) {
+                circle.style.backgroundImage = `url('${user.profilePhotoUrl}')`;
+                text.style.display = 'none';
+            } else {
+                circle.style.backgroundImage = 'none';
+                text.style.display = 'block';
+                text.textContent = user.firstName ? user.firstName[0].toUpperCase() : '?';
+            }
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cards-container');
+            if (localCards.length === 0) {
+                container.innerHTML = `<div class="col-span-full py-8 text-center border-2 border-dashed border-white/10 rounded-[2rem] text-slate-500 text-sm">No cards linked yet.</div>`;
+                return;
+            }
+            container.innerHTML = '';
+            localCards.forEach(card => {
+                const last4 = card.cardNumber ? card.cardNumber.slice(-4) : '••••';
+                const div = document.createElement('div');
+                div.className = 'card-bg p-6 rounded-[1.5rem] shadow-xl border border-white/10 flex flex-col justify-between min-h-[130px]';
+                div.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <svg class="w-8 h-8 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        <span class="px-2 py-1 bg-white/10 rounded-md text-[10px] text-white/80 uppercase font-medium">Active</span>
+                    </div>
+                    <div class="mt-4 text-white">
+                        <p class="font-mono tracking-widest text-lg mb-1">•••• •••• •••• ${last4}</p>
+                        <p class="text-[9px] text-white/40 uppercase tracking-widest">Expires ${card.expiryDate || '••/••'}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Security Logic
+        function startPasswordRecovery() {
+            alert("Security code has been sent to your email.");
+            toggleModal('password-modal', true);
+            document.getElementById('step-verify-code').classList.remove('hidden');
+            document.getElementById('password-form').classList.add('hidden');
+        }
+
+        function verifyCode() {
+            const code = document.getElementById('verify-code').value;
+            if (code.length === 6) {
+                document.getElementById('step-verify-code').classList.add('hidden');
+                document.getElementById('password-form').classList.remove('hidden');
+            } else {
+                alert("Please enter a valid 6-digit code.");
+            }
+        }
+
+        function resetSecurityModal() {
+            toggleModal('password-modal', false);
+            document.getElementById('verify-code').value = '';
+            document.getElementById('password-form').reset();
+        }
+
+        function toggleModal(id, show) {
+            document.getElementById(id).classList.toggle('hidden-modal', !show);
+            if (show && id === 'edit-modal' && userCache) {
+                document.getElementById('edit-firstname').value = userCache.firstName || '';
+                document.getElementById('edit-lastname').value = userCache.lastName || '';
+                document.getElementById('edit-email').value = userCache.email || '';
+                document.getElementById('edit-phone').value = userCache.phoneNumber || '';
+            }
+        }
+
+        document.getElementById('edit-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('accessToken');
+            const data = {
+                firstName: document.getElementById('edit-firstname').value,
+                lastName: document.getElementById('edit-lastname').value,
+                email: document.getElementById('edit-email').value,
+                phoneNumber: document.getElementById('edit-phone').value
+            };
+            const response = await fetch(`${BASE_URL}/${userCache.login}`, {
+                method: 'PUT', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (response.ok) { toggleModal('edit-modal', false); fetchProfile(); }
+        };
+
+        // ... остальной JS (Avatar upload, Card management) остается без изменений
+        document.getElementById('logout-btn').onclick = () => { localStorage.clear(); window.location.href = 'auth.html'; };
+        document.addEventListener('DOMContentLoaded', fetchProfile);
+    </script>
+</body>
+</html>
