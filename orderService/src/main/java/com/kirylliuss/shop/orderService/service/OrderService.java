@@ -49,6 +49,13 @@ public class OrderService {
     }
 
     @Transactional
+    public List<ItemResponse> getItemsByCategory(String category){
+        return itemRepository.findByCategory(category).stream()
+                .map(itemMapper::toItemResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public ItemResponse createItem(ItemRequest request, MultipartFile file){
 
         String fileUrl = imageService.uploadImage(file);
