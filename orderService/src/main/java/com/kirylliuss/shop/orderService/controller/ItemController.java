@@ -50,6 +50,12 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/getByCategory/{category}")
+    public ResponseEntity<List<ItemResponse>> getItemByCategory(@PathVariable String category){
+        List<ItemResponse> responses = itemService.getItemsByCategory(category);
+        return ResponseEntity.ok(responses);
+    }
+
     @PostMapping
     public ResponseEntity<ItemResponse> createItem(
             @Valid @RequestPart("item") ItemRequest request,
