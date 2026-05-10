@@ -1,8 +1,8 @@
-# BARAHOLISHE Marketplace 🛒
+# BARAHOLISHE Marketplace 
 
 This project is a lightweight marketplace platform consisting of a Spring Boot microservice for the backend and a modern, responsive frontend built with HTML, Vanilla JavaScript, and Tailwind CSS.
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### **Backend**
 
@@ -33,7 +33,7 @@ This project is a lightweight marketplace platform consisting of a Spring Boot m
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 * **Ad Feed**: Dynamic loading and display of product cards, including prices and category labels.
 
@@ -53,7 +53,7 @@ This project is a lightweight marketplace platform consisting of a Spring Boot m
 
 ---
 
-## 📂 API Overview (`ItemController`)
+## API Overview (`ItemController`)
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
@@ -81,7 +81,7 @@ This project is a lightweight marketplace platform consisting of a Spring Boot m
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Backend Setup
 
