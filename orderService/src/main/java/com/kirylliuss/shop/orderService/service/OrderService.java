@@ -35,71 +35,8 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
 
     private final OrderMapper orderMapper;
-    private final ItemMapper itemMapper;
 
     private final UserServiceClient userServiceClient;
-
-    private final ImageService imageService;
-
-    @Transactional
-    public List<ItemResponse> getAllItems(){
-        return itemRepository.findAll().stream()
-                .map(itemMapper::toItemResponse)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public List<ItemResponse> getItemsByCategory(String category){
-        return itemRepository.findByCategory(category).stream()
-                .map(itemMapper::toItemResponse)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public ItemResponse createItem(ItemRequest request, MultipartFile file){
-
-        String fileUrl = imageService.uploadImage(file);
-
-        Item item = itemMapper.toItem(request);
-        item.setImageUrl(fileUrl);
-
-        Item savedItem = itemRepository.save(item);
-
-        return itemMapper.toItemResponse(savedItem);
-    }
-
-    @Transactional(readOnly = true)
-    public ItemResponse getItemById(Long id){
-        Item item = itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
-        return itemMapper.toItemResponse(item);
-    }
-
-    @Transactional(readOnly = true)
-    public ItemResponse getItemByName(String name) {
-        Item item = itemRepository.findByName(name);
-        if (item == null) {
-            throw new RuntimeException("Item not found with name: " + name);
-        }
-        return itemMapper.toItemResponse(item);
-    }
-
-    @Transactional
-    public ItemResponse updateItem(ItemRequest request, Long id){
-        Item item = itemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Item not found with id: " + id));
-
-        itemMapper.updateItemFromRequest(request, item);
-        Item updatedItem = itemRepository.save(item);
-        return itemMapper.toItemResponse(updatedItem);
-    }
-
-    @Transactional
-    public void deleteItem(Long id){
-        if(!itemRepository.existsById(id)){
-            throw new RuntimeException("Not found!");
-        }
-        itemRepository.deleteById(id);
-    }
 
     @Transactional
     public OrderItemResponse addToCard(OrderItemRequest request){
