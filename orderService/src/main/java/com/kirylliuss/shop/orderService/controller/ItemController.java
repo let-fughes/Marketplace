@@ -4,7 +4,7 @@ import com.kirylliuss.shop.orderService.dto.request.ItemRequest;
 import com.kirylliuss.shop.orderService.dto.response.ImageUrlResponse;
 import com.kirylliuss.shop.orderService.dto.response.ItemResponse;
 import com.kirylliuss.shop.orderService.service.ImageService;
-import com.kirylliuss.shop.orderService.service.OrderService;
+import com.kirylliuss.shop.orderService.service.ItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.util.List;
 @Validated
 public class ItemController {
 
-    private final OrderService itemService;
+    private final ItemService itemService;
     private final ImageService imageService;
 
     @GetMapping
