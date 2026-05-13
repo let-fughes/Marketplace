@@ -1,10 +1,11 @@
 spring:
   application:
     name: order-service
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/webshop_order_db
-    username: postgres
-    password: root
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -34,10 +35,10 @@ spring:
         spring.json.use.type.headers: false
 
 minio:
-  url: http://127.0.0.1:9000
-  accessKey: minioadmin
-  secretKey: minioadmin
-  bucket: shop-images
+  url: ${MINIO_URL}
+  accessKey: ${MINIO_USERNAME}
+  secretKey: ${MINIO_PASSWORD}
+  bucket: ${MINIO_BUCKET}
 
 server:
   port: 8083
@@ -46,4 +47,4 @@ user-service:
   url: http://localhost:8081
 
 jwt:
-  secret: ZaiYc8RRobcwsj88Og2r70hJXcxFZ8zhwDH9cmX9620c7F+A8zDDu+volEdStqfz4AuppwmB3ayEz/WIlLBSbg==
+  secret: ${JWT_SECRET}
