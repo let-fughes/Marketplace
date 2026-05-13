@@ -31,4 +31,7 @@ public class Item {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "user_id")
+    private Long userId;
 }
