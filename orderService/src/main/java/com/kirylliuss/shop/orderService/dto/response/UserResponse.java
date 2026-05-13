@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserResponse {
+    private Long id;
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
