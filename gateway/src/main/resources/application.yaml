@@ -8,10 +8,12 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          secret-key: ZaiYc8RRobcwsj88Og2r70hJXcxFZ8zhwDH9cmX9620c7F+A8zDDu+volEdStqfz4AuppwmB3ayEz/WIlLBSbg==
+          secret-key: ${JWT_SECRET}
     cloud:
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+    codec:
+      max-in-memory-size: 10MB
   servlet:
     multipart:
       max-file-size: 10MB
