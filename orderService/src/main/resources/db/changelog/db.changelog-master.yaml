@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: create-items-table
       author: Kiryl-Klimashevich
+      runOnChange: true
       changes:
         - createTable:
             tableName: items
@@ -34,6 +35,11 @@ databaseChangeLog:
               - column:
                   name: image_url
                   type: VARCHAR(512)
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
 
   - changeSet:
       id: create-orders-table
@@ -120,6 +126,7 @@ databaseChangeLog:
   - changeSet:
       id: create-favorites-table
       author: Kiryl-Klimashevich
+      runOnChange: true
       changes:
         - createTable:
             tableName: favorites
@@ -132,12 +139,12 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: userId
+                  name: user_id
                   type: BIGINT
                   constraints:
                     nullable: false
               - column:
-                  name: itemId
+                  name: item_id
                   type: BIGINT
                   constraints:
                     nullable: false
