@@ -8,9 +8,9 @@ spring:
       max-request-size: 10MB
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/webshopuserdb
-    username: postgres
-    password: root
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   liquibase:
@@ -29,19 +29,18 @@ server:
   port: 8081
 
 jwt:
-  secret: ZaiYc8RRobcwsj88Og2r70hJXcxFZ8zhwDH9cmX9620c7F+A8zDDu+volEdStqfz4AuppwmB3ayEz/WIlLBSbg==
+  secret: ${JWT_SECRET}
   refresh:
     expiration: 604800000
   access:
     expiration: 900000
 
 minio:
-  url: http://127.0.0.1:9000
-  accessKey: minioadmin
-  secretKey: minioadmin
-  bucket: profile-photo
+  url: ${MINIO_URL}
+  accessKey: ${MINIO_USERNAME}
+  secretKey: ${MINIO_PASSWORD}
 
 SANDLER:
   MAIL:
-    USERNAME: alarunghez@gmail.com
-    PASSWORD: rtek szxy uige wloq
+    USERNAME: ${MAIL_USERNAME}
+    PASSWORD: ${MAIL_PASSWORD}
