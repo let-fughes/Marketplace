@@ -3,9 +3,9 @@ spring:
     name: Auth Service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/webshopauthdb
-    username: postgres
-    password: root
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   liquibase:
@@ -24,7 +24,7 @@ server:
   port: 8082
 
 jwt:
-  secret: ZaiYc8RRobcwsj88Og2r70hJXcxFZ8zhwDH9cmX9620c7F+A8zDDu+volEdStqfz4AuppwmB3ayEz/WIlLBSbg==
+  secret: ${JWT_SECRET}
   refresh:
     expiration: 604800000
   access:
