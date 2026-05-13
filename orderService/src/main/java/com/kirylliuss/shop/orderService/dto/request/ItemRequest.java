@@ -22,4 +22,6 @@ public class ItemRequest {
 
     @JsonProperty("category")
     private String category;
+
+    private Long userId;
 }
