@@ -68,7 +68,18 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // ... твои предыдущие методы ...
+    @GetMapping("/profileByLogin")
+    @Operation(
+            summary = "Get user by id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User got successfully"),
+                    @ApiResponse(responseCode = "404", description = "User not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+    public ResponseEntity<UserResponse> getProfile(String login){
+        UserResponse response = userService.getUserData(login);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
     @PostMapping(value = "/profile/avatar", consumes = "multipart/form-data")
     @Operation(

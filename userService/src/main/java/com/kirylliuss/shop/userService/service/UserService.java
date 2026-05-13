@@ -45,6 +45,7 @@ public class UserService {
         return toUserResponseWithCards(user);
     }
 
+    @Transactional
     public UserResponse getUserData(String login){
         User user = userRepository.findByLogin(login).orElseThrow(() -> new RuntimeException("User not found!"));
         return userMapper.toUserResponse(user);
