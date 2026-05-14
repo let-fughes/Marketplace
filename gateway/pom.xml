@@ -82,6 +82,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>one.stayfocused.spring</groupId>
+			<artifactId>dotenv-spring-boot</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>io.github.cdimascio</groupId>
 			<artifactId>dotenv-java</artifactId>
 			<version>3.2.0</version>
