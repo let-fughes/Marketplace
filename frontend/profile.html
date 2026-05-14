@@ -286,7 +286,6 @@
             if (response.ok) { toggleModal('edit-modal', false); fetchProfile(); }
         };
 
-        // ... остальной JS (Avatar upload, Card management) остается без изменений
         document.getElementById('logout-btn').onclick = () => { localStorage.clear(); window.location.href = 'auth.html'; };
         document.addEventListener('DOMContentLoaded', fetchProfile);
     </script>

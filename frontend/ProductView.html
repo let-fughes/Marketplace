@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product View | BARAHOLISHE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .soft-glass { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .action-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .action-btn:active { transform: scale(0.95); }
+        .image-glow { box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.2); }
+        .btn-delete { background-color: #ef4444; }
+        .btn-delete:hover { background-color: #dc2626; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-12">
+
+    <div class="max-w-6xl mx-auto">
+        <nav class="flex items-center justify-between mb-12">
+            <a href="index.html" class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group">
+                <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span class="text-sm font-medium">Back to Marketplace</span>
+            </a>
+        </nav>
+
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <div class="space-y-6">
+                <div id="mainImageContainer" class="aspect-square rounded-[3rem] bg-slate-800 overflow-hidden border border-white/5 image-glow flex items-center justify-center">
+                    <div class="text-slate-600 animate-pulse">Loading image...</div>
+                </div>
+            </div>
+
+            <div class="soft-glass p-8 md:p-12 rounded-[3rem] space-y-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <span id="categoryBadge" class="px-3 py-1 bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-widest rounded-full">Category</span>
+                        <span id="productIdLabel" class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">ID: ---</span>
+                    </div>
+                    <h1 id="productTitle" class="text-4xl font-bold text-white leading-tight mb-2">Loading...</h1>
+                </div>
+
+                <div class="py-6 border-y border-white/5">
+                    <p id="productPrice" class="text-3xl font-bold text-white">0.00 <span class="text-lg font-medium text-slate-400 ml-1">BYN</span></p>
+                </div>
+
+                <div class="space-y-4">
+                    <p id="productDescription" class="text-slate-300 leading-relaxed text-sm">---</p>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <div id="sellerAvatar" class="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-white uppercase">
+                        ?
+                    </div>
+                    <div>
+                        <p id="sellerName" class="text-sm font-semibold text-white tracking-wide">Seller</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4" id="actionButtons">
+                    <button id="buyBtn" class="action-btn flex items-center justify-center gap-2 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl shadow-lg shadow-blue-900/20">
+                        Buy Now
+                    </button>
+                    </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+const GATEWAY_URL = 'http://127.0.0.1:8080';
+const ITEMS_API = `${GATEWAY_URL}/v1/api/items`;
+const USER_API = `${GATEWAY_URL}/v1/api/users/profile`;
+
+const FALLBACK_IMAGE = "data:image/svg+xml;charset=UTF-8,%3Csvg width='800' height='800' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%231e293b'/%3E%3Ctext x='50%25' y='50%25' font-family='Inter, sans-serif' font-size='24' fill='%23475569' text-anchor='middle' dy='.3em'%3EIMAGE NOT FOUND%3C/text%3E%3C/svg%3E";
+
+const urlParams = new URLSearchParams(window.location.search);
+const productId = urlParams.get('id');
+
+async function getCurrentUser() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return null;
+    try {
+        const res = await fetch(USER_API, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) return await res.json();
+    } catch (e) { console.error("User fetch error", e); }
+    return null;
+}
+
+async function loadProductDetails() {
+    if (!productId) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    try {
+        const itemResponse = await fetch(`${ITEMS_API}/id/${productId}`);
+        if (!itemResponse.ok) throw new Error("Item not found");
+        const item = await itemResponse.json();
+
+        const currentUser = await getCurrentUser();
+        renderProduct(item, currentUser);
+
+    } catch (err) {
+        document.getElementById('productTitle').textContent = "Connection Error";
+        document.getElementById('mainImageContainer').innerHTML =
+            `<img src="${FALLBACK_IMAGE}" class="w-full h-full object-cover">`;
+    }
+}
+
+async function getImageUrl(id) {
+    const res = await fetch(`${ITEMS_API}/getImage/${id}`);
+    if (!res.ok) return FALLBACK_IMAGE;
+    const data = await res.json();
+    return data.url;
+}
+
+async function deleteProduct(id) {
+    if (!confirm("Are you sure you want to delete this ad?")) return;
+    
+    const token = localStorage.getItem('accessToken');
+    try {
+        const response = await fetch(`${ITEMS_API}/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+            alert("Item deleted successfully!");
+            window.location.href = 'index.html';
+        } else {
+            alert("Failed to delete item.");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Error connecting to server.");
+    }
+}
+
+async function renderProduct(item, currentUser) {
+    document.title = `${item.name || 'Product'} | BARAHOLISHE`;
+
+    const container = document.getElementById('mainImageContainer');
+    const imgUrl = await getImageUrl(item.id);
+    container.innerHTML = `<img src="${imgUrl || FALLBACK_IMAGE}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-full object-cover">`;
+
+    document.getElementById('productTitle').textContent = item.name || "Unknown";
+    document.getElementById('productPrice').innerHTML = `${new Intl.NumberFormat('be-BY').format(item.price || 0)} <span class="text-lg font-medium text-slate-400 ml-1">BYN</span>`;
+    document.getElementById('productDescription').textContent = item.description || "No description.";
+    document.getElementById('categoryBadge').textContent = item.category || "General";
+    document.getElementById('productIdLabel').textContent = `ID: ${item.id}`;
+
+    if (item.sellerName) {
+        document.getElementById('sellerName').textContent = item.sellerName;
+        document.getElementById('sellerAvatar').textContent = item.sellerName[0].toUpperCase();
+    }
+
+    if (currentUser && item.sellerName === currentUser.firstName) {
+        const actionGrid = document.getElementById('actionButtons');
+        const delBtn = document.createElement('button');
+        delBtn.className = "action-btn flex items-center justify-center gap-2 py-4 btn-delete text-white font-bold rounded-2xl shadow-lg shadow-red-900/20";
+        delBtn.textContent = "Delete Ad";
+        delBtn.onclick = () => deleteProduct(item.id);
+        actionGrid.appendChild(delBtn);
+    }
+
+    document.getElementById('buyBtn').onclick = () => {
+        window.location.href = `checkout.html?id=${item.id}`;
+    };
+}
+
+document.addEventListener('DOMContentLoaded', loadProductDetails);
+</script>
+</body>
+</html>

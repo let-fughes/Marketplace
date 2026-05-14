@@ -132,7 +132,6 @@
                     toggleBtn.innerText = 'Login';
                     regOnlyFields.forEach(f => {
                         f.classList.remove('hidden');
-                        // Не ставим required на birthDate и phone, если они опциональны в DTO
                     });
                 }
                 container.style.opacity = '1';
@@ -155,7 +154,6 @@
                     alert("Passwords do not match!");
                     return;
                 }
-                // Добавляем поля для RegisterRequest
                 payload = {
                     ...payload,
                     firstName: data.firstName || null,
@@ -181,7 +179,6 @@
 
                 if (response.ok) {
                     if (isLogin) {
-                        // Сохраняем токены из TokenResponse
                         localStorage.setItem('accessToken', result.accessToken);
                         localStorage.setItem('refreshToken', result.refreshToken);
                         window.location.href = 'index.html'; 
