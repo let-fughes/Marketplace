@@ -1,5 +1,7 @@
 # BARAHOLISHE Marketplace 
 
+![Main page](pics/pic1.png)
+
 This project is a lightweight marketplace platform consisting of a Spring Boot microservice for the backend and a modern, responsive frontend built with HTML, Vanilla JavaScript, and Tailwind CSS.
 
 ## Tech Stack
