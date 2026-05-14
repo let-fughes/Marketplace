@@ -77,8 +77,6 @@ This project is a lightweight marketplace platform consisting of a Spring Boot m
  |
 | **DELETE** | `/v1/api/items/{id}` | Remove an advertisement from the platform.
 
- |
-
 ---
 
 ## Getting Started
