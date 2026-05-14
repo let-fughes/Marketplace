@@ -28,22 +28,18 @@ public class ShopGatewayApplication {
 		return builder.routes()
 				.route("user-service-route", r -> r
 						.path("/v1/api/users/**")
-						.filters(GatewayFilterSpec::tokenRelay) // Добавь это
 						.uri("http://localhost:8081"))
 				.route("auth-service", r -> r
 						.path("/v1/api/auth/**")
-						.uri("http://localhost:8082")) // Auth обычно не нуждается в relay
+						.uri("http://localhost:8082"))
 				.route("order-service-1", r -> r
 						.path("/v1/api/orders/**")
-						.filters(GatewayFilterSpec::tokenRelay) // Добавь это
 						.uri("http://localhost:8083"))
 				.route("order-service-2", r -> r
 						.path("/v1/api/items/**")
-						.filters(GatewayFilterSpec::tokenRelay) // Добавь это
 						.uri("http://localhost:8083"))
 				.route("payment-service", r -> r
 						.path("/v1/api/payments/**")
-						.filters(GatewayFilterSpec::tokenRelay) // Добавь это
 						.uri("http://localhost:8084"))
 				.build();
 	}

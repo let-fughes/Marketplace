@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import reactor.core.publisher.Mono;
+import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Arrays;
@@ -35,11 +36,15 @@ public class SecurityConfig {
 
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
+        // Декодируем из Base64
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
 
-        SecretKeySpec spec = new SecretKeySpec(keyBytes, "HmacSHA512");
+        // ПРИНУДИТЕЛЬНО создаем SecretKeySpec (никаких Keys.hmacShaKeyFor)
+        // Если длина байт != 64, Spring выбросит ошибку при старте - это нам и нужно,
+        // чтобы увидеть, что ключ не тот.
+        var key = new SecretKeySpec(keyBytes, "HmacSHA512");
 
-        return NimbusReactiveJwtDecoder.withSecretKey(spec)
+        return NimbusReactiveJwtDecoder.withSecretKey(key)
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
     }
