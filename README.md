@@ -60,23 +60,11 @@ This project is a lightweight marketplace platform consisting of a Spring Boot m
 | Method | Endpoint | Description |
 | --- | --- | --- |
 | **GET** | `/v1/api/items` | Retrieve all items.
-
- |
 | **GET** | `/v1/api/items/id/{id}` | Get specific item details by ID.
-
- |
 | **GET** | `/v1/api/items/getByCategory/{category}` | Filter marketplace items by a specific category.
-
- |
 | **GET** | `/v1/api/items/getImage/{id}` | Get the direct URL for a product image.
-
- |
 | **POST** | `/v1/api/items` | Create a new advertisement (JSON + Image file).
-
- |
 | **PUT** | `/v1/api/items/{id}` | Update existing product information.
-
- |
 | **DELETE** | `/v1/api/items/{id}` | Remove an advertisement from the platform.
 
 ---
